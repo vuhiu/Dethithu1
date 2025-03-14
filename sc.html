@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thi Thử WEB3023</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+}
+
+.logo {
+    margin-right: auto;
+}
+
+.search {
+    transition: width 0.5s;
+    width: 150px;
+    padding: 5px;
+}
+
+.search:focus {
+    width: 300px;
+}
+
+nav {
+    margin-left: 20px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menu li {
+    display: inline;
+    margin: 0 10px;
+}
+
+.menu a {
+    color: white;
+    text-decoration: none;
+}
+
+.post-title {
+    cursor: pointer;
+    margin: 20px 0;
+}
+
+.post-description {
+    display: none;
+    transition: all 0.5s;
+}
+
+.post-title:hover + .post-description {
+    display: block;
+    transform: translateY(20px);
+}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Logo</div>
+        <input type="text" class="search" placeholder="Tìm kiếm..." required>
+        <nav>
+            <ul class="menu">
+                <li><a href="#">Trang chủ</a></li>
+                <li><a href="#">Giới thiệu</a></li>
+                <li><a href="#">Dịch vụ</a></li>
+                <li><a href="#">Liên hệ</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article>
+            <h2 class="post-title">Tiêu đề sản phẩm</h2>
+            <p class="post-description">Nội dung mô tả sản phẩm sẽ hiển thị tại đây.</p>
+        </article>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
