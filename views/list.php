@@ -1,55 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DANH SACH SP</title>
-</head>
-<body>
-    <div class="header">
-        <h1>Danh Sach San Pham</h1>
-    </div>
+<?php
+require_once __DIR__ . '/../../../commons/connect.php';
 
-    <table>
-        <thead>
-            <tr>
-               <th>ID</th>
-               <th>Tên sách</th>
-               <th>Hình ảnh bìa sách</th>
-               <th>Tác giả</th>
-               <th>Nhà xuất bản</th>
-               <th>Ngày xuất bản</th>
-               <th></th>
-               <th></th>
-               <th></th>
-            </tr>
-           
-        </thead>
-        <tbody>
-            <?php foreach($book as $b) { ?>
-                <tr>
-                    <td data-label="ID"><?= $b['id']?></td>
-                    <td data-label="Title"><?= $b['title']?></td>
-                    <td>
-                        <img style="width: 100px" src="./upload/<?= $b['image'] ?>" alt="">
-                    </td>
-                    <td data-label="Author"><?= $b['author']?></td>
-                    <td data-label="Publisher"><?= $b['publisher']?></td>
-                    <td data-label="Publish_date"><?= $b['publish_date']?></td>
-                    <td data-label="Actions">
-                        <a href="?act=edit&id=<?=$b['id']?>">Sua</a>
-                    </td>
-                    <td data-label="Actions">
-                        <a href="?act=delete&id=<?=$b['id']?>">Xoa</a>
-                    </td>
-                    <td data-label="Actions">
-                        <a href="?act=create&id=<?=$b['id']?>">them</a>
-                    </td>
-                </tr>
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-                
-            <?php } ?>
-        </tbody>
-    </table>
-</body>
-</html>
+$conn = connectDB();
+if (!$conn) {
+    die("Lỗi kết nối CSDL");
+}
+
+// Truy vấn danh sách sản phẩm
+$sql = "SELECT p.*, c.name as category_name FROM products p 
+        LEFT JOIN categories c ON p.category_id = c.category_id 
+        ORDER BY p.created_at DESC";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$products = $stmt->fetchAll();
+?>
+
+<h2>Danh sách sản phẩm</h2>
+
+<!-- Hiển thị thông báo -->
+<?php if (isset($_GET['status']) && $_GET['status'] == 'deleted'): ?>
+    <div class="alert alert-success">Xóa sản phẩm thành công!</div>
+<?php elseif (isset($_GET['error'])): ?>
+    <div class="alert alert-danger">Lỗi khi xóa sản phẩm!</div>
+<?php endif; ?>
+
+<a href="?act=sanpham&page=them" class="btn btn-success mb-3">Thêm sản phẩm</a>
+
+<table class="table table-bordered">
+  <thead class="table-dark">
+    <tr>
+      <th scope="col">STT</th>
+      <th scope="col">Ảnh</th>
+      <th scope="col">Tên sản phẩm</th>
+      <th scope="col">Giá gốc</th>
+      <th scope="col">Giá khuyến mãi</th>
+      <th scope="col">Danh mục</th>
+      <th scope="col">Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php foreach ($products as $index => $product): ?>
+      <tr>
+        <th scope="row"><?= $index + 1 ?></th>
+        <td>
+          <img src="<?= htmlspecialchars('../uploads/' . $product['image']) ?>" width="80" height="80" alt="<?= htmlspecialchars($product['name']) ?>">
+        </td>
+        <td><?= htmlspecialchars($product['name']) ?></td>
+        <td><?= number_format($product['price']) ?>đ</td>
+        <td><?= number_format($product['sale_price']) ?>đ</td>
+        <td><?= htmlspecialchars($product['category_name']) ?></td>
+        <td>
+          <a href="?act=sanpham&page=sua&id=<?= $product['product_id'] ?>" class="btn btn-warning btn-sm">Sửa</a>
+          <a href="modules/sanpham/delete_product.php?id=<?= $product['product_id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa không?');">Xóa</a>
+        </td>
+      </tr>
+    <?php endforeach; ?>
+
+    <?php if (empty($products)): ?>
+      <tr><td colspan="7" class="text-center">Không có sản phẩm nào</td></tr>
+    <?php endif; ?>
+  </tbody>
+</table>
